@@ -1,4 +1,6 @@
 #Algoritmo de ruta de mayor y menor costo en matrix 13x13
+#Con colores
+import matplotlib.pyplot as plt 
 
 def encontrar_posicion(matrix, objetivo):
     for fila, fila_valores in enumerate(matrix):
@@ -76,9 +78,35 @@ def calcular_costos_y_rutas(matrix, inicio, fin):
                     ruta_maxima[x][y] = ruta_maxima[x][y-1] + [(x, y)]
     
     return costo_minimo[fin[0]][fin[1]], ruta_minima[fin[0]][fin[1]], costo_maximo[fin[0]][fin[1]], ruta_maxima[fin[0]][fin[1]]
+def visualizar_rutas(matrix, ruta_minima, ruta_maxima):
+    filas, columnas = len(matrix), len(matrix[0])
 
+    colors = [[[255, 255, 255] for _ in range(columnas)] for _ in range(filas)] 
+    
+    # Ruta mínima en rosa
+    for (x, y) in ruta_minima:
+        colors[x][y] = [255, 0, 255]  
+    
+    # Ruta máxima en morado
+    for (x, y) in ruta_maxima:
+        if colors[x][y] == [255, 0, 255]:
+            colors[x][y] = [128, 0, 128]  # Morado para intersección de rutas
+        else:
+            colors[x][y] = [128, 0, 255]  # Morado
+    
+    # Crear la figura y los ejes
+    fig, ax = plt.subplots()
+    ax.imshow(colors, aspect='auto')
 
-# Ejecutar la simulación y calcular costos y rutas
+    # Mostrar los valores de la matriz en las celdas
+    for i in range(filas):
+        for j in range(columnas):
+            ax.text(j, i, matrix[i][j], va='center', ha='center', color='black')
+
+    plt.title('Matriz con rutas mínima (rosa) y máxima (morado)')
+    plt.show()
+
+# calcular costos y rutas
 try:
     costo_minimo, ruta_minima, costo_maximo, ruta_maxima = calcular_costos_y_rutas(matrix, inicio, fin)
     
@@ -86,6 +114,8 @@ try:
     print(f"Ruta mínima: {ruta_minima}")
     print(f"Costo máximo: {costo_maximo}")
     print(f"Ruta máxima: {ruta_maxima}")
+
+    visualizar_rutas(matrix, ruta_minima, ruta_maxima)
 
 except ValueError as e:
     print(e)
